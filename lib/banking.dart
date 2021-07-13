@@ -1,12 +1,34 @@
+import 'dart:convert';
 import 'package:finance/profile.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:http/http.dart' as http;
+
+
+
+final typeController = TextEditingController();
+final conceptController = TextEditingController();
+final mountController = TextEditingController();
 
 
 class Banking extends StatelessWidget {
+
+   _postMovements() async {
+    Map data = {
+      'type': typeController.text,
+      'concept': conceptController.text,
+      'mount': mountController.text,
+    };
+
+    var body = json.encode(data);
+
+    var response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/movements'),
+        headers: {"Content-Type": "application/json"},
+        body: body);
+  }
+
+
   @override
   Widget build(BuildContext context) {
    return Scaffold(
@@ -46,6 +68,7 @@ class Banking extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
               child: TextFormField(
+                controller: typeController,
                 style: TextStyle(fontSize: 18.0),
                 decoration: InputDecoration(
                   labelText: 'Tipo',
@@ -59,6 +82,7 @@ class Banking extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
               child: TextFormField(
+                controller: conceptController,
                 style: TextStyle(fontSize: 18.0),
                 decoration: InputDecoration(
                     labelText: 'Concepto',
@@ -72,6 +96,7 @@ class Banking extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
               child: TextFormField(
+                controller: mountController,
                 style: TextStyle(fontSize: 18.0),
                 decoration: InputDecoration(
                     labelText: 'Monto',
@@ -102,7 +127,8 @@ class Banking extends StatelessWidget {
                 child: Padding(
                     padding: const EdgeInsets.all(2),
                     child: IconButton(
-                      onPressed: () {
+                      onPressed: () async{
+                        await _postMovements();
                         var route = new MaterialPageRoute(
                           builder: (BuildContext context) => new Profile(),
                         );

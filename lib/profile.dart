@@ -16,7 +16,7 @@ class CreateProfile extends State<Profile> {
 
   _getMovements() async {
     http.Response response =
-        await http.get(Uri.parse('http://10.0.2.2:4000/api/movements'));
+        await http.get(Uri.parse('http://10.0.2.2:3000/api/movements'));
     data = json.decode(response.body);
     setState(() {
       movementsData = data['movements'];
@@ -24,8 +24,6 @@ class CreateProfile extends State<Profile> {
   }
 
   String _setImage(String type){
-    debugPrint("aqui");
-    debugPrint(type);
     if(type == "ingreso"){
       return 'images/sent.png';
     }else{
@@ -39,72 +37,7 @@ class CreateProfile extends State<Profile> {
     _getMovements();
   }
 
-  Widget _buildMovement() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 15.0, right: 15, top: 25),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: new BorderRadius.only(
-              bottomLeft: const Radius.circular(5.0),
-              bottomRight: const Radius.circular(5.0),
-              topLeft: const Radius.circular(5.0),
-              topRight: const Radius.circular(5.0),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey[300],
-                blurRadius: 10.0, // soften the shadow
-                spreadRadius: 2.0, //extend the shadow
-                offset: Offset(
-                  0, // Move to right 10  horizontally
-                  4, // Move to bottom 10 Vertically
-                ),
-              )
-            ]),
-        child: ListTile(
-          leading: Container(
-            height: 40,
-            width: 70,
-            decoration: BoxDecoration(
-              borderRadius: new BorderRadius.only(
-                bottomLeft: const Radius.circular(5.0),
-                bottomRight: const Radius.circular(5.0),
-                topLeft: const Radius.circular(5.0),
-                topRight: const Radius.circular(5.0),
-              ),
-              image: DecorationImage(
-                image: NetworkImage('https://img.icons8.com/ios/452/sent.png'),
-              ),
-            ),
-          ),
-          title: Row(
-            children: [
-              Text(
-                "movement.type",
-                style: GoogleFonts.cinzel(
-                    color: Colors.black,
-                    letterSpacing: 0,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          subtitle: Text("movement.concept"),
-          trailing: Text(
-            "movement.mount",
-            style: GoogleFonts.cinzel(
-                color: Colors.black,
-                letterSpacing: 0,
-                fontSize: 14,
-                fontWeight: FontWeight.bold),
-          ),
-          isThreeLine: false,
-        ),
-      ),
-    );
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,7 +127,7 @@ class CreateProfile extends State<Profile> {
                         height: MediaQuery.of(context).size.height / 70,
                       ),
                       Text(
-                        'Jose Erick',
+                        'Anthony González',
                         style: GoogleFonts.cinzel(
                             color: Colors.grey[900],
                             fontSize: 20,

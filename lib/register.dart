@@ -5,42 +5,38 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
-class Register extends StatefulWidget{
-  CreateRegister createState()=> CreateRegister();
-  
+class Register extends StatefulWidget {
+  CreateRegister createState() => CreateRegister();
 }
 
-
-class CreateRegister extends State<Profile>{
-  final typeController = TextEditingController(); 
-  final conceptController = TextEditingController(); 
-  final mountController = TextEditingController(); 
+class CreateRegister extends State<Profile> {
+  final typeController = TextEditingController();
+  final conceptController = TextEditingController();
+  final mountController = TextEditingController();
 
   Map data;
   List movementsData = new List();
 
-
-
-
-  Future<List> _postMovements(){
-    http.post(Uri.parse('http://10.0.2.2:4000/api/movements/createFaker'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: {
-    "type": typeController.text,
-    "concept": conceptController.text,
-    "mount": mountController.text,
-
-  });
-  }
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
+    _postMovements();
   }
 
+  _postMovements() async {
+    Map data = {
+      'type': typeController.text,
+      'concept': conceptController.text,
+      'mount': mountController.text,
+    };
 
+    var body = json.encode(data);
+
+    var response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/movements'),
+        headers: {"Content-Type": "application/json"},
+        body: {body});
+  }
 
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -76,32 +72,30 @@ class CreateRegister extends State<Profile>{
               child: Column(
                 children: [
                   Text(
-                    'Agregar Gasto/Ingreso',
+                    'Agregar Gastoads/Ingreso',
                     style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 40.0,
-                      fontWeight: FontWeight.bold
-                    ),
+                        color: Colors.black,
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.bold),
                   )
                 ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
+              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
               child: TextFormField(
                 style: TextStyle(fontSize: 18.0),
                 controller: typeController,
                 decoration: InputDecoration(
-                  labelText: 'Tipo',
-                  labelStyle: TextStyle(fontSize: 18.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  )
-                ),
+                    labelText: 'Tipo',
+                    labelStyle: TextStyle(fontSize: 18.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    )),
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
+              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
               child: TextFormField(
                 style: TextStyle(fontSize: 18.0),
                 controller: conceptController,
@@ -110,12 +104,11 @@ class CreateRegister extends State<Profile>{
                     labelStyle: TextStyle(fontSize: 18.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                    )
-                ),
+                    )),
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
+              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
               child: TextFormField(
                 style: TextStyle(fontSize: 18.0),
                 controller: mountController,
@@ -124,8 +117,7 @@ class CreateRegister extends State<Profile>{
                     labelStyle: TextStyle(fontSize: 18.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                    )
-                ),
+                    )),
               ),
             ),
             Container(
@@ -146,11 +138,10 @@ class CreateRegister extends State<Profile>{
                   ],
                 ),
                 child: Padding(
-                    padding: const EdgeInsets .all(2),
+                    padding: const EdgeInsets.all(2),
                     child: IconButton(
-                      onPressed: () async{ 
-                        await _postMovements();
-                        
+                      onPressed: () {
+                        _postMovements();
                       },
                       iconSize: 30.0,
                       icon: Icon(
