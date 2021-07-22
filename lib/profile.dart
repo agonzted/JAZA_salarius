@@ -2,8 +2,8 @@ import 'package:finance/banking.dart';
 import 'package:finance/recent.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
-import 'dart:async';
 import 'dart:convert';
 
 class Profile extends StatefulWidget {
@@ -12,6 +12,7 @@ class Profile extends StatefulWidget {
 
 class CreateProfile extends State<Profile> {
   Map data;
+  // ignore: deprecated_member_use
   List movementsData = new List();
 
   _getMovements() async {
@@ -41,7 +42,7 @@ class CreateProfile extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: HexColor("#262626"),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -52,24 +53,14 @@ class CreateProfile extends State<Profile> {
               padding: const EdgeInsets.all(15.0),
               child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: HexColor("262626"),
                       borderRadius: new BorderRadius.only(
                         bottomLeft: const Radius.circular(5.0),
                         bottomRight: const Radius.circular(5.0),
                         topLeft: const Radius.circular(5.0),
                         topRight: const Radius.circular(5.0),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey[300],
-                          blurRadius: 10.0, // soften the shadow
-                          spreadRadius: 2.0, //extend the shadow
-                          offset: Offset(
-                            0, // Move to right 10  horizontally
-                            4, // Move to bottom 10 Vertically
-                          ),
-                        )
-                      ]),
+                  ),
                   height: 290,
                   width: MediaQuery.of(context).size.width,
                   child: Center(
@@ -89,14 +80,14 @@ class CreateProfile extends State<Profile> {
                             child: Padding(
                               padding: const EdgeInsets.only(left: 18.0),
                               child: Icon(Icons.arrow_back_ios,
-                                  color: Colors.grey[600], size: 16),
+                                  color: Colors.white, size: 16),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(right: 18.0),
                             child: ClipOval(
                               child: Material(
-                                color: Colors.blue,
+                                color: HexColor("#21BF48"),
                                 child: InkWell(
                                   splashColor: Colors.red, // Splash color
                                   onTap: () {
@@ -129,7 +120,7 @@ class CreateProfile extends State<Profile> {
                       Text(
                         'Anthony González',
                         style: GoogleFonts.cinzel(
-                            color: Colors.grey[900],
+                            color: HexColor("A6A6A6"),
                             fontSize: 20,
                             fontWeight: FontWeight.normal),
                       ),
@@ -143,7 +134,7 @@ class CreateProfile extends State<Profile> {
                       Text(
                         '\$485',
                         style: GoogleFonts.cinzel(
-                            color: Colors.grey[900],
+                            color: HexColor("A6A6A6"),
                             fontSize: 20,
                             fontWeight: FontWeight.normal),
                       ),
@@ -163,20 +154,8 @@ class CreateProfile extends State<Profile> {
                             },
                             child: Container(
                                 decoration: new BoxDecoration(
-                                  color: Colors.blue[800],
+                                  color: HexColor("#21BF48"),
                                   borderRadius: BorderRadius.circular(40),
-                                  boxShadow: [
-                                    //background color of box
-                                    BoxShadow(
-                                      color: Colors.blue[200],
-                                      blurRadius: 6.0, // soften the shadow
-                                      spreadRadius: 0.0, //extend the shadow
-                                      offset: Offset(
-                                        0.0, // Move to right 10  horizontally
-                                        2.0, // Move to bottom 10 Vertically
-                                      ),
-                                    )
-                                  ],
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.only(
@@ -225,7 +204,6 @@ class CreateProfile extends State<Profile> {
                 ),
               ],
             ),
-            
             ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -237,24 +215,14 @@ class CreateProfile extends State<Profile> {
                         const EdgeInsets.only(left: 15.0, right: 15, top: 25),
                     child: Container(
                       decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Colors.black87,
                           borderRadius: new BorderRadius.only(
                             bottomLeft: const Radius.circular(5.0),
                             bottomRight: const Radius.circular(5.0),
                             topLeft: const Radius.circular(5.0),
                             topRight: const Radius.circular(5.0),
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey[300],
-                              blurRadius: 10.0, // soften the shadow
-                              spreadRadius: 2.0, //extend the shadow
-                              offset: Offset(
-                                0, // Move to right 10  horizontally
-                                4, // Move to bottom 10 Vertically
-                              ),
-                            )
-                          ]),
+                      ),
                       child: ListTile(
                         leading: Container(
                           height: 40,
@@ -276,18 +244,22 @@ class CreateProfile extends State<Profile> {
                             Text(
                               "${movementsData[index]['type']}",
                               style: GoogleFonts.cinzel(
-                                  color: Colors.black,
+                                  color: Colors.grey,
                                   letterSpacing: 0,
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
-                        subtitle: Text("${movementsData[index]['concept']}"),
+                        subtitle: Text(
+                          "${movementsData[index]['concept']}",
+                          style: TextStyle(
+                            color: Colors.grey,
+                          )),
                         trailing: Text(
                           "${movementsData[index]['mount']}",
                           style: GoogleFonts.cinzel(
-                              color: Colors.black,
+                              color: Colors.grey,
                               letterSpacing: 0,
                               fontSize: 14,
                               fontWeight: FontWeight.bold),

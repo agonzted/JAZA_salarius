@@ -3,13 +3,59 @@ import 'package:finance/profile.dart';
 import 'package:finance/register.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  CreateMainPage createState() => CreateMainPage();
+}
+
+var bandera;
+
+class CreateMainPage extends State<MainPage> {
+
+  final userController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  Map data;
+  // ignore: deprecated_member_use
+  List usersData = new List();
+
+   Future<bool> _getUsers() async {
+    bandera=false;
+    http.Response response =
+        await http.get(Uri.parse('http://10.0.2.2:3000/api/users'));
+    data = json.decode(response.body);
+    setState(() {
+      usersData = data['users'];
+    });
+    var contador=0;
+    for(var i=0;i<usersData.length;i++){
+      if(userController.text == usersData[i]['user']){
+        if(passwordController.text == usersData[i]['password']){
+          bandera = true;
+          print("Correcto");
+          return bandera;
+        }else{
+          print("incorrecto 1");
+          return bandera;
+        }
+      }else{
+        contador++;
+        if(contador==usersData.length){
+          return bandera;
+        }
+      }
+    }
+    
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: HexColor("#262626"),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -30,30 +76,31 @@ class MainPage extends StatelessWidget {
                 child: Material(
                   elevation: 20.0,
                   borderRadius: BorderRadius.circular(40),
-                  shadowColor: Colors.grey[200],
+                  color: HexColor("0D0D0D"),
                   child: TextFormField(
+                    controller: userController,
                     textAlign: TextAlign.center,
-                    obscureText: true,
+                    style: TextStyle(color: Colors.white),
                     autofocus: false,
                     decoration: InputDecoration(
-                        hintStyle: GoogleFonts.alegreya(
-                            color: Colors.grey[600],
+                        hintStyle: GoogleFonts.openSans(
+                            color: HexColor("A6A6A6"),
                             fontSize: 17,
                             fontWeight: FontWeight.normal),
                         icon: Padding(
                           padding: const EdgeInsets.only(left: 26.0, bottom: 5),
                           child: new Icon(Icons.mail_outline_outlined,
-                              color: Colors.grey[600], size: 22),
+                              color: HexColor("A6A6A6"), size: 22),
                         ),
-                        hintText: 'Enter Your Email',
-                        fillColor: Colors.white,
+                        hintText: 'Ingresa tu usuario',
+                        fillColor: HexColor("#0D0D0D"),
                         filled: true,
                         contentPadding:
                             EdgeInsets.fromLTRB(-30.0, 30.0, 20.0, 20.0),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(40.0),
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 3.0))),
+                            borderSide: BorderSide(
+                                color: HexColor("#595959"), width: 3.0))),
                   ),
                 ),
               ),
@@ -65,30 +112,32 @@ class MainPage extends StatelessWidget {
                 child: Material(
                   elevation: 20.0,
                   borderRadius: BorderRadius.circular(40),
-                  shadowColor: Colors.grey[200],
+                  color: HexColor("0D0D0D"),
                   child: TextFormField(
+                    controller: passwordController,
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
                     obscureText: true,
                     autofocus: false,
                     decoration: InputDecoration(
-                        hintStyle: GoogleFonts.alegreya(
-                            color: Colors.grey[600],
+                        hintStyle: GoogleFonts.openSans(
+                            color: HexColor("A6A6A6"),
                             fontSize: 17,
                             fontWeight: FontWeight.normal),
                         icon: Padding(
                           padding: const EdgeInsets.only(left: 26.0, bottom: 5),
                           child: new Icon(Icons.lock_open_outlined,
-                              color: Colors.grey[600], size: 22),
+                              color: HexColor("A6A6A6"), size: 22),
                         ),
-                        hintText: 'Enter Your Password',
-                        fillColor: Colors.white,
+                        hintText: 'Ingresa tu contrasena',
+                        fillColor: HexColor("#0D0D0D"),
                         filled: true,
                         contentPadding:
                             EdgeInsets.fromLTRB(-10.0, 30.0, 20.0, 20.0),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(40.0),
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 3.0))),
+                            borderSide: BorderSide(
+                                color: HexColor("#595959"), width: 3.0))),
                   ),
                 ),
               ),
@@ -97,36 +146,48 @@ class MainPage extends StatelessWidget {
               ),
               Container(
                   decoration: new BoxDecoration(
-                    color: Colors.blue[800],
+                    color: HexColor("24BF48"),
                     borderRadius: BorderRadius.circular(40),
                     boxShadow: [
                       //background color of box
-                      BoxShadow(
-                        color: Colors.blue[400],
-                        blurRadius: 10.0, // soften the shadow
-                        spreadRadius: 1.0, //extend the shadow
-                        offset: Offset(
-                          0.0, // Move to right 10  horizontally
-                          3.0, // Move to bottom 10 Vertically
-                        ),
-                      )
                     ],
                   ),
                   child: Padding(
                       padding: const EdgeInsets.all(2),
                       child: IconButton(
-                        onPressed: () {
-                          var route = new MaterialPageRoute(
-                            builder: (BuildContext context) => new Profile(),
-                          );
+                        onPressed: () async {
+                          if( await _getUsers()){
+                            var route = new MaterialPageRoute(
+                              builder: (BuildContext context) => new Profile(),
+                            );
 
-                          Navigator.of(context).push(route);
+                            Navigator.of(context).push(route);
+                          }else{
+                            return showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('ERROR'),
+                                  content: Text(
+                                      'usuario y/o contraseña incorrecto'),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: new Text('ok'))
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                          
                         },
                         iconSize: 30.0,
                         icon: Icon(
-                          Icons.forward_outlined,
+                          Icons.forward,
                         ),
-                        color: Colors.white,
+                        color: HexColor("#ffffff"),
                       ))),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 15,
@@ -136,20 +197,19 @@ class MainPage extends StatelessWidget {
                 children: [
                   FlatButton(
                     onPressed: () {
-                      //var route = new MaterialPageRoute(
-                      //builder: (BuildContext context) => new Register(),
-                      //);
-                      //Navigator.of(context).push(route);
+                      var route = new MaterialPageRoute(
+                        builder: (BuildContext context) => new Register(),
+                      );
+                      Navigator.of(context).push(route);
                     },
-                    child: new Text("Tap Here"),
+                    child: new Text(
+                      "Registrate",
+                      style: TextStyle(
+                        fontSize: 35,
+                        color: HexColor("A6A6A6"),
+                      ),
+                    ),
                   ),
-                  Text(
-                    'Forgot Password?',
-                    style: GoogleFonts.lato(
-                        color: Colors.grey[600],
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal),
-                  )
                 ],
               ),
               SizedBox(

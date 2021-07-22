@@ -4,52 +4,40 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Register extends StatefulWidget {
   CreateRegister createState() => CreateRegister();
 }
 
-class CreateRegister extends State<Profile> {
-  final typeController = TextEditingController();
-  final conceptController = TextEditingController();
-  final mountController = TextEditingController();
+final userController = TextEditingController();
+final passwordController = TextEditingController();
+final confirmPasswordController = TextEditingController();
 
+class CreateRegister extends State<Register> {
   Map data;
   List movementsData = new List();
 
-  @override
-  void initState() {
-    super.initState();
-    _postMovements();
-  }
-
   _postMovements() async {
     Map data = {
-      'type': typeController.text,
-      'concept': conceptController.text,
-      'mount': mountController.text,
+      'user': userController.text,
+      'password': passwordController.text,
     };
 
     var body = json.encode(data);
-
-    var response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/movements'),
-        headers: {"Content-Type": "application/json"},
-        body: {body});
-  }
-
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    typeController.dispose();
-    conceptController.dispose();
-    mountController.dispose();
-    super.dispose();
+    if (passwordController.text == confirmPasswordController.text) {
+      var response = await http.post(
+          Uri.parse('http://10.0.2.2:3000/api/users'),
+          headers: {"Content-Type": "application/json"},
+          body: body);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: HexColor("#262626"),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -72,7 +60,7 @@ class CreateRegister extends State<Profile> {
               child: Column(
                 children: [
                   Text(
-                    'Agregar Gastoads/Ingreso',
+                    'Registrate',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 40.0,
@@ -81,60 +69,125 @@ class CreateRegister extends State<Profile> {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-              child: TextFormField(
-                style: TextStyle(fontSize: 18.0),
-                controller: typeController,
-                decoration: InputDecoration(
-                    labelText: 'Tipo',
-                    labelStyle: TextStyle(fontSize: 18.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    )),
-              ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-              child: TextFormField(
-                style: TextStyle(fontSize: 18.0),
-                controller: conceptController,
-                decoration: InputDecoration(
-                    labelText: 'Concepto',
-                    labelStyle: TextStyle(fontSize: 18.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    )),
+              padding: const EdgeInsets.symmetric(horizontal: 28.0),
+              child: Material(
+                elevation: 20.0,
+                borderRadius: BorderRadius.circular(40),
+                color: HexColor("0D0D0D"),
+                child: TextFormField(
+                  controller: userController,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white),
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintStyle: GoogleFonts.openSans(
+                          color: HexColor("A6A6A6"),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(left: 26.0, bottom: 5),
+                        child: new Icon(Icons.mail_outline_outlined,
+                            color: HexColor("A6A6A6"), size: 22),
+                      ),
+                      hintText: 'Ingresa tu usuario',
+                      fillColor: HexColor("#0D0D0D"),
+                      filled: true,
+                      contentPadding:
+                          EdgeInsets.fromLTRB(-30.0, 30.0, 20.0, 20.0),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                          borderSide: BorderSide(
+                              color: HexColor("#595959"), width: 3.0))),
+                ),
               ),
             ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
+            ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-              child: TextFormField(
-                style: TextStyle(fontSize: 18.0),
-                controller: mountController,
-                decoration: InputDecoration(
-                    labelText: 'Monto',
-                    labelStyle: TextStyle(fontSize: 18.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    )),
+              padding: const EdgeInsets.symmetric(horizontal: 28.0),
+              child: Material(
+                elevation: 20.0,
+                borderRadius: BorderRadius.circular(40),
+                color: HexColor("0D0D0D"),
+                child: TextFormField(
+                  controller: passwordController,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white),
+                  obscureText: true,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintStyle: GoogleFonts.openSans(
+                          color: HexColor("A6A6A6"),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(left: 26.0, bottom: 5),
+                        child: new Icon(Icons.mail_outline_outlined,
+                            color: HexColor("A6A6A6"), size: 22),
+                      ),
+                      hintText: 'Ingresa tu contraseña',
+                      fillColor: HexColor("#0D0D0D"),
+                      filled: true,
+                      contentPadding:
+                          EdgeInsets.fromLTRB(-30.0, 30.0, 20.0, 20.0),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                          borderSide: BorderSide(
+                              color: HexColor("#595959"), width: 3.0))),
+                ),
               ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28.0),
+              child: Material(
+                elevation: 20.0,
+                borderRadius: BorderRadius.circular(40),
+                color: HexColor("0D0D0D"),
+                child: TextFormField(
+                  controller: confirmPasswordController,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white),
+                  obscureText: true,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintStyle: GoogleFonts.openSans(
+                          color: HexColor("A6A6A6"),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(left: 26.0, bottom: 5),
+                        child: new Icon(Icons.mail_outline_outlined,
+                            color: HexColor("A6A6A6"), size: 22),
+                      ),
+                      hintText: 'Confirma tu contraseña',
+                      fillColor: HexColor("#0D0D0D"),
+                      filled: true,
+                      contentPadding:
+                          EdgeInsets.fromLTRB(-30.0, 30.0, 20.0, 20.0),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                          borderSide: BorderSide(
+                              color: HexColor("#595959"), width: 3.0))),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 20,
             ),
             Container(
                 decoration: new BoxDecoration(
-                  color: Colors.blue[800],
+                  color: HexColor("24BF48"),
                   borderRadius: BorderRadius.circular(40),
                   boxShadow: [
                     //background color of box
-                    BoxShadow(
-                      color: Colors.blue[400],
-                      blurRadius: 10.0, // soften the shadow
-                      spreadRadius: 1.0, //extend the shadow
-                      offset: Offset(
-                        0.0, // Move to right 10  horizontally
-                        3.0, // Move to bottom 10 Vertically
-                      ),
-                    )
                   ],
                 ),
                 child: Padding(
@@ -142,10 +195,11 @@ class CreateRegister extends State<Profile> {
                     child: IconButton(
                       onPressed: () {
                         _postMovements();
+                        Navigator.pop(context);
                       },
                       iconSize: 30.0,
                       icon: Icon(
-                        Icons.forward_outlined,
+                        Icons.forward,
                       ),
                       color: Colors.white,
                     ))),

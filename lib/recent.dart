@@ -1,226 +1,272 @@
-import 'package:circle_list/circle_list.dart';
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class Recent extends StatelessWidget {
+class Recent extends StatefulWidget {
+  CreateRecent createState() => CreateRecent();
+}
+
+class CreateRecent extends State<Recent> {
+  Map data;
+  // ignore: deprecated_member_use
+  List movementsData = new List();
+  List movementsDataI = new List();
+  List movementsDataG = new List();
+
+  _getMovements() async {
+    http.Response response =
+    await http.get(Uri.parse('http://localhost:3000/api/movements'));
+    data = json.decode(response.body);
+    setState(() {
+      movementsData = data['movements'];
+      for(var x=0;x<movementsData.length;x++){
+        if(movementsData[x]['type']=='ingreso'){
+          movementsDataI.add(movementsData[x]);
+        }else{
+          movementsDataG.add(movementsData[x]);
+        }
+      }
+    });
+  }
+
+  String _setImage(String type){
+    if(type == "ingreso"){
+      return 'images/sent.png';
+    }else{
+      return 'images/recieved.png';
+    }
+  }
+  void _filtroGastos(String type){
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getMovements();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: HexColor("#262626"),
+        appBar: AppBar(
+          backgroundColor: HexColor("#21BF48"),
+          bottom: TabBar(
+            indicatorColor: Colors.white,
+            tabs: [
+              Tab(text: "Todo",),
+              Tab(text: "Gastos",),
+              Tab(text: "ingresos",),
+            ],
+          ),
+          title: Text('Operaciones'),
+        ),
+        body: TabBarView(
           children: [
-            SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 18.0),
-                      child: Icon(Icons.arrow_back_ios,
-                          color: Colors.grey[600], size: 20),
-                    )),
-                Padding(
-                  padding: const EdgeInsets.only(right: 18.0),
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 22.0),
-                  child: Text(
-                    'Reciente',
-                    style: GoogleFonts.cinzel(
-                        color: Colors.grey[700],
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, left: 0.0),
-                  child: Material(
-                    color: Colors.blue[900],
-                    borderRadius: BorderRadius.circular(40),
-                    elevation: 20,
-                    child: Container(
-                        height: 35,
-                        width: 100,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 0.0,
+            Center(
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: movementsData.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return SingleChildScrollView(
+                    child: Padding(padding:
+                    const EdgeInsets.only(left: 15.0, right: 15, top: 25),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black87,
+                          borderRadius: new BorderRadius.only(
+                            bottomLeft: const Radius.circular(5.0),
+                            bottomRight: const Radius.circular(5.0),
+                            topLeft: const Radius.circular(5.0),
+                            topRight: const Radius.circular(5.0),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'TODO',
-                                style: GoogleFonts.lato(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        )),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, left: 0.0),
-                  child: Material(
-                    borderRadius: BorderRadius.circular(40),
-                    elevation: 10,
-                    child: Container(
-                        height: 35,
-                        width: 100,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 0.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'GASTOS',
-                                style: GoogleFonts.lato(
-                                    color: Colors.grey[600],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        )),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, left: 0.0),
-                  child: Material(
-                    borderRadius: BorderRadius.circular(40),
-                    elevation: 10,
-                    child: Container(
-                        height: 35,
-                        width: 100,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 0.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'INGRESOS',
-                                style: GoogleFonts.lato(
-                                    color: Colors.grey[600],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        )),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 22.0),
-                  child: Text(
-                    'HOY',
-                    style: GoogleFonts.lato(
-                        color: Colors.grey[900],
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15, top: 15),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: new BorderRadius.only(
-                      bottomLeft: const Radius.circular(5.0),
-                      bottomRight: const Radius.circular(5.0),
-                      topLeft: const Radius.circular(5.0),
-                      topRight: const Radius.circular(5.0),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey[300],
-                        blurRadius: 10.0, // soften the shadow
-                        spreadRadius: 2.0, //extend the shadow
-                        offset: Offset(
-                          0, // Move to right 10  horizontally
-                          4, // Move to bottom 10 Vertically
                         ),
-                      )
-                    ]),
-                child: ListTile(
-                  leading: Container(
-                    height: 40,
-                    width: 70,
-                    decoration: BoxDecoration(
-                      borderRadius: new BorderRadius.only(
-                        bottomLeft: const Radius.circular(5.0),
-                        bottomRight: const Radius.circular(5.0),
-                        topLeft: const Radius.circular(5.0),
-                        topRight: const Radius.circular(5.0),
-                      ),
-                      image: DecorationImage(
-                        image: NetworkImage('https://img.icons8.com/ios/452/sent.png'),
+                        child: ListTile(
+                          leading: Container(
+                            height: 40,
+                            width: 70,
+                            decoration: BoxDecoration(
+                              borderRadius: new BorderRadius.only(
+                                bottomLeft: const Radius.circular(5.0),
+                                bottomRight: const Radius.circular(5.0),
+                                topLeft: const Radius.circular(5.0),
+                                topRight: const Radius.circular(5.0),
+                              ),
+                              image: DecorationImage(
+                                image: AssetImage(_setImage("${movementsData[index]['type']}") ),
+                              ),
+                            ),
+                          ),
+                          title: Row(
+                            children: [
+                              Text(
+                                "${movementsData[index]['type']}",
+                                style: GoogleFonts.cinzel(
+                                    color: Colors.grey,
+                                    letterSpacing: 0,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          subtitle: Text(
+                              "${movementsData[index]['concept']}",
+                              style: TextStyle(
+                                color: Colors.grey,
+                              )),
+                          trailing: Text(
+                            "${movementsData[index]['mount']}",
+                            style: GoogleFonts.cinzel(
+                                color: Colors.grey,
+                                letterSpacing: 0,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          isThreeLine: false,
+                        ),
                       ),
                     ),
-                  ),
-                  title: Row(
-                    children: [
-                      Text(
-                        'Gasto',
-                        style: GoogleFonts.cinzel(
-                            color: Colors.black,
-                            letterSpacing: 0,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                  );
+                }),),
+            Center(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: movementsDataG.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return SingleChildScrollView(
+                      child: Padding(padding:
+                      const EdgeInsets.only(left: 15.0, right: 15, top: 25),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: new BorderRadius.only(
+                              bottomLeft: const Radius.circular(5.0),
+                              bottomRight: const Radius.circular(5.0),
+                              topLeft: const Radius.circular(5.0),
+                              topRight: const Radius.circular(5.0),
+                            ),
+                          ),
+                          child: ListTile(
+                            leading: Container(
+                              height: 40,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: new BorderRadius.only(
+                                  bottomLeft: const Radius.circular(5.0),
+                                  bottomRight: const Radius.circular(5.0),
+                                  topLeft: const Radius.circular(5.0),
+                                  topRight: const Radius.circular(5.0),
+                                ),
+                                image: DecorationImage(
+                                  image: AssetImage(_setImage("${movementsDataG[index]['type']}") ),
+                                ),
+                              ),
+                            ),
+                            title: Row(
+                              children: [
+                                Text(
+                                  "${movementsDataG[index]['type']}",
+                                  style: GoogleFonts.cinzel(
+                                      color: Colors.grey,
+                                      letterSpacing: 0,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            subtitle: Text(
+                                "${movementsDataG[index]['concept']}",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                )),
+                            trailing: Text(
+                              "${movementsDataG[index]['mount']}",
+                              style: GoogleFonts.cinzel(
+                                  color: Colors.grey,
+                                  letterSpacing: 0,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            isThreeLine: false,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                  subtitle: Text('Doritos'),
-                  trailing: Text(
-                    '\$15',
-                    style: GoogleFonts.cinzel(
-                        color: Colors.black,
-                        letterSpacing: 0,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  isThreeLine: false,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 40,
-            ),
+                    );
+                  }),),
+            Center(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: movementsDataI.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return SingleChildScrollView(
+                      child: Padding(padding:
+                      const EdgeInsets.only(left: 15.0, right: 15, top: 25),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: new BorderRadius.only(
+                              bottomLeft: const Radius.circular(5.0),
+                              bottomRight: const Radius.circular(5.0),
+                              topLeft: const Radius.circular(5.0),
+                              topRight: const Radius.circular(5.0),
+                            ),
+                          ),
+                          child: ListTile(
+                            leading: Container(
+                              height: 40,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: new BorderRadius.only(
+                                  bottomLeft: const Radius.circular(5.0),
+                                  bottomRight: const Radius.circular(5.0),
+                                  topLeft: const Radius.circular(5.0),
+                                  topRight: const Radius.circular(5.0),
+                                ),
+                                image: DecorationImage(
+                                  image: AssetImage(_setImage("${movementsDataI[index]['type']}") ),
+                                ),
+                              ),
+                            ),
+                            title: Row(
+                              children: [
+                                Text(
+                                  "${movementsDataI[index]['type']}",
+                                  style: GoogleFonts.cinzel(
+                                      color: Colors.grey,
+                                      letterSpacing: 0,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            subtitle: Text(
+                                "${movementsDataI[index]['concept']}",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                )),
+                            trailing: Text(
+                              "${movementsDataI[index]['mount']}",
+                              style: GoogleFonts.cinzel(
+                                  color: Colors.grey,
+                                  letterSpacing: 0,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            isThreeLine: false,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),),
           ],
         ),
       ),

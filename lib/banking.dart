@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:finance/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -23,7 +25,7 @@ class Banking extends StatelessWidget {
     var body = json.encode(data);
 
     var response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/movements'),
+        Uri.parse('http://localhost:3000/api/movements'),
         headers: {"Content-Type": "application/json"},
         body: body);
   }
@@ -32,7 +34,7 @@ class Banking extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
    return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: HexColor("262626"),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -57,7 +59,7 @@ class Banking extends StatelessWidget {
                   Text(
                     'Agregar Gasto/Ingreso',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontSize: 40.0,
                       fontWeight: FontWeight.bold
                     ),
@@ -67,62 +69,108 @@ class Banking extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
-              child: TextFormField(
-                controller: typeController,
-                style: TextStyle(fontSize: 18.0),
-                decoration: InputDecoration(
-                  labelText: 'Tipo',
-                  labelStyle: TextStyle(fontSize: 18.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  )
+              child: Material(
+                elevation: 20.0,
+                borderRadius: BorderRadius.circular(40),
+                color: HexColor("0D0D0D"),
+                child: TextFormField(
+                  controller: typeController,
+                  textAlign: TextAlign.center,
+                  obscureText: true,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintStyle: GoogleFonts.openSans(
+                          color: HexColor("A6A6A6"),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(left: 26.0, bottom: 5),
+                        child: new Icon(Icons.drag_handle,
+                            color: HexColor("A6A6A6"), size: 22),
+                      ),
+                      hintText: 'Ingresa el tipo de movimiento',
+                      fillColor: HexColor("#0D0D0D"),
+                      filled: true,
+                      contentPadding:
+                      EdgeInsets.fromLTRB(-30.0, 30.0, 20.0, 20.0),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                          borderSide:
+                          BorderSide(color: HexColor("#595959"), width: 3.0))),
+                  ),
                 ),
               ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
+              child: Material(
+                elevation: 20.0,
+                borderRadius: BorderRadius.circular(40),
+                color: HexColor("0D0D0D"),
+                child: TextFormField(
+                  controller: conceptController,
+                  textAlign: TextAlign.center,
+                  obscureText: true,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintStyle: GoogleFonts.openSans(
+                          color: HexColor("A6A6A6"),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(left: 26.0, bottom: 5),
+                        child: new Icon(Icons.question_answer,
+                            color: HexColor("A6A6A6"), size: 22),
+                      ),
+                      hintText: 'Ingresa el concepto del movimiento',
+                      fillColor: HexColor("#0D0D0D"),
+                      filled: true,
+                      contentPadding:
+                      EdgeInsets.fromLTRB(-30.0, 30.0, 20.0, 20.0),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                          borderSide:
+                          BorderSide(color: HexColor("#595959"), width: 3.0))),
+                ),
+              ),
+
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
-              child: TextFormField(
-                controller: conceptController,
-                style: TextStyle(fontSize: 18.0),
-                decoration: InputDecoration(
-                    labelText: 'Concepto',
-                    labelStyle: TextStyle(fontSize: 18.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    )
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
-              child: TextFormField(
-                controller: mountController,
-                style: TextStyle(fontSize: 18.0),
-                decoration: InputDecoration(
-                    labelText: 'Monto',
-                    labelStyle: TextStyle(fontSize: 18.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    )
+              child: Material(
+                elevation: 20.0,
+                borderRadius: BorderRadius.circular(40),
+                color: HexColor("0D0D0D"),
+                child: TextFormField(
+                  controller: mountController,
+                  textAlign: TextAlign.center,
+                  obscureText: true,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintStyle: GoogleFonts.openSans(
+                          color: HexColor("A6A6A6"),
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(left: 26.0, bottom: 5),
+                        child: new Icon(Icons.attach_money,
+                            color: HexColor("A6A6A6"), size: 22),
+                      ),
+                      hintText: 'Ingresa el monto',
+                      fillColor: HexColor("#0D0D0D"),
+                      filled: true,
+                      contentPadding:
+                      EdgeInsets.fromLTRB(-30.0, 30.0, 20.0, 20.0),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40.0),
+                          borderSide:
+                          BorderSide(color: HexColor("#595959"), width: 3.0))),
                 ),
               ),
             ),
             Container(
                 decoration: new BoxDecoration(
-                  color: Colors.blue[800],
+                  color: HexColor("24BF48"),
                   borderRadius: BorderRadius.circular(40),
-                  boxShadow: [
-                    //background color of box
-                    BoxShadow(
-                      color: Colors.blue[400],
-                      blurRadius: 10.0, // soften the shadow
-                      spreadRadius: 1.0, //extend the shadow
-                      offset: Offset(
-                        0.0, // Move to right 10  horizontally
-                        3.0, // Move to bottom 10 Vertically
-                      ),
-                    )
-                  ],
                 ),
                 child: Padding(
                     padding: const EdgeInsets.all(2),
@@ -137,9 +185,9 @@ class Banking extends StatelessWidget {
                       },
                       iconSize: 30.0,
                       icon: Icon(
-                        Icons.forward_outlined,
+                        Icons.forward,
                       ),
-                      color: Colors.white,
+                      color: HexColor("#ffffff"),
                     ))),
             SizedBox(height: 20),
           ],
