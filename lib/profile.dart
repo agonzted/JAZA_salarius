@@ -1,5 +1,6 @@
 import 'package:finance/banking.dart';
 import 'package:finance/recent.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -7,6 +8,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Profile extends StatefulWidget {
+  final String nameData;
+
+  const Profile({this.nameData});
   CreateProfile createState() => CreateProfile();
 }
 
@@ -14,13 +18,26 @@ class CreateProfile extends State<Profile> {
   Map data;
   // ignore: deprecated_member_use
   List movementsData = new List();
+  List movementsDataUser = new List();
+  double movementsDataUserBalance = 0.00;
+  double aux;
 
   _getMovements() async {
+    movementsDataUserBalance = 0;
+    print(widget.nameData);
     http.Response response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/api/movements'));
+        await http.get(Uri.parse('https://api-salaries.herokuapp.com/api/movements'));
     data = json.decode(response.body);
     setState(() {
       movementsData = data['movements'];
+      for(var x=0;x<movementsData.length;x++){
+        if(movementsData[x]['user']==widget.nameData){
+          movementsDataUser.add(movementsData[x]);
+          aux = double.parse(movementsData[x]['mount']);
+          movementsDataUserBalance = movementsDataUserBalance + aux;
+        }else{
+        }
+      }
     });
   }
 
@@ -93,7 +110,7 @@ class CreateProfile extends State<Profile> {
                                   onTap: () {
                                     var route = new MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            new Banking());
+                                            new Banking(userData: widget.nameData));
                                     Navigator.of(context).push(route);
                                   },
                                   child: Icon(
@@ -118,7 +135,7 @@ class CreateProfile extends State<Profile> {
                         height: MediaQuery.of(context).size.height / 70,
                       ),
                       Text(
-                        'Anthony González',
+                        widget.nameData,
                         style: GoogleFonts.cinzel(
                             color: HexColor("A6A6A6"),
                             fontSize: 20,
@@ -132,7 +149,7 @@ class CreateProfile extends State<Profile> {
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '\$485',
+                        movementsDataUserBalance.toString(),
                         style: GoogleFonts.cinzel(
                             color: HexColor("A6A6A6"),
                             fontSize: 20,
@@ -208,7 +225,7 @@ class CreateProfile extends State<Profile> {
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
-                itemCount: movementsData.length,
+                itemCount: movementsDataUser.length,
                 itemBuilder: (BuildContext context, int index) {
                   return SingleChildScrollView(
                     child: Padding(padding:
@@ -235,14 +252,14 @@ class CreateProfile extends State<Profile> {
                               topRight: const Radius.circular(5.0),
                             ),
                             image: DecorationImage(
-                              image: AssetImage(_setImage("${movementsData[index]['type']}") ),
+                              image: AssetImage(_setImage("${movementsDataUser[index]['type']}") ),
                             ),
                           ),
                         ),
                         title: Row(
                           children: [
                             Text(
-                              "${movementsData[index]['type']}",
+                              "${movementsDataUser[index]['type']}",
                               style: GoogleFonts.cinzel(
                                   color: Colors.grey,
                                   letterSpacing: 0,
@@ -252,12 +269,12 @@ class CreateProfile extends State<Profile> {
                           ],
                         ),
                         subtitle: Text(
-                          "${movementsData[index]['concept']}",
+                          "${movementsDataUser[index]['concept']}",
                           style: TextStyle(
                             color: Colors.grey,
                           )),
                         trailing: Text(
-                          "${movementsData[index]['mount']}",
+                          "${movementsDataUser[index]['mount']}",
                           style: GoogleFonts.cinzel(
                               color: Colors.grey,
                               letterSpacing: 0,

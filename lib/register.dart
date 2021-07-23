@@ -28,7 +28,7 @@ class CreateRegister extends State<Register> {
     var body = json.encode(data);
     if (passwordController.text == confirmPasswordController.text) {
       var response = await http.post(
-          Uri.parse('http://10.0.2.2:3000/api/users'),
+          Uri.parse('https://api-salaries.herokuapp.com/api/users'),
           headers: {"Content-Type": "application/json"},
           body: body);
     }

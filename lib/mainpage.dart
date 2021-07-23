@@ -7,6 +7,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+
+
 class MainPage extends StatefulWidget {
   CreateMainPage createState() => CreateMainPage();
 }
@@ -14,6 +16,7 @@ class MainPage extends StatefulWidget {
 var bandera;
 
 class CreateMainPage extends State<MainPage> {
+  
 
   final userController = TextEditingController();
   final passwordController = TextEditingController();
@@ -21,36 +24,39 @@ class CreateMainPage extends State<MainPage> {
   Map data;
   // ignore: deprecated_member_use
   List usersData = new List();
+  List userData = new List();
 
-   Future<bool> _getUsers() async {
-    bandera=false;
+  Future<bool> _getUsers() async {
+    userData.clear();
+    bandera = false;
     http.Response response =
-        await http.get(Uri.parse('http://10.0.2.2:3000/api/users'));
+        await http.get(Uri.parse('https://api-salaries.herokuapp.com/api/users'));
     data = json.decode(response.body);
     setState(() {
       usersData = data['users'];
     });
-    var contador=0;
-    for(var i=0;i<usersData.length;i++){
-      if(userController.text == usersData[i]['user']){
-        if(passwordController.text == usersData[i]['password']){
+    var contador = 0;
+    for (var i = 0; i < usersData.length; i++) {
+      if (userController.text == usersData[i]['user']) {
+        if (passwordController.text == usersData[i]['password']) {
+          userData.add(usersData[i]);
+          print(userData[0]['user']);
           bandera = true;
           print("Correcto");
           return bandera;
-        }else{
+        } else {
           print("incorrecto 1");
           return bandera;
         }
-      }else{
+      } else {
         contador++;
-        if(contador==usersData.length){
+        if (contador == usersData.length) {
           return bandera;
         }
       }
     }
-    
   }
-
+  String nameData;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -156,20 +162,20 @@ class CreateMainPage extends State<MainPage> {
                       padding: const EdgeInsets.all(2),
                       child: IconButton(
                         onPressed: () async {
-                          if( await _getUsers()){
+                          if (await _getUsers()) {
                             var route = new MaterialPageRoute(
-                              builder: (BuildContext context) => new Profile(),
+                              builder: (BuildContext context) => new Profile(nameData: userData[0]['user']),
                             );
-
+                            
                             Navigator.of(context).push(route);
-                          }else{
+                          } else {
                             return showDialog(
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
                                   title: Text('ERROR'),
-                                  content: Text(
-                                      'usuario y/o contraseña incorrecto'),
+                                  content:
+                                      Text('usuario y/o contraseña incorrecto'),
                                   actions: <Widget>[
                                     new FlatButton(
                                         onPressed: () {
@@ -181,7 +187,6 @@ class CreateMainPage extends State<MainPage> {
                               },
                             );
                           }
-                          
                         },
                         iconSize: 30.0,
                         icon: Icon(
